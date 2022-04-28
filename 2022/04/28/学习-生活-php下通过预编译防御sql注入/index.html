@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    学习_生活记录_再探sql注入_sqlmap使用 &amp; tamper编写 |  YaoWen&#39;s Blog
+    学习&amp;生活_php下通过预编译防御sql注入 |  YaoWen&#39;s Blog
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -44,7 +44,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-学习_生活记录_再探sql注入"
+  id="post-学习-生活-php下通过预编译防御sql注入"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -55,22 +55,22 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  学习_生活记录_再探sql注入_sqlmap使用 &amp; tamper编写
+  学习&amp;生活_php下通过预编译防御sql注入
 </h1>
  
 
     </header>
      
     <div class="article-meta">
-      <a href="/2022/04/26/%E5%AD%A6%E4%B9%A0_%E7%94%9F%E6%B4%BB%E8%AE%B0%E5%BD%95_%E5%86%8D%E6%8E%A2sql%E6%B3%A8%E5%85%A5/" class="article-date">
-  <time datetime="2022-04-26T13:09:10.862Z" itemprop="datePublished">2022-04-26</time>
+      <a href="/2022/04/28/%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%B4%BB-php%E4%B8%8B%E9%80%9A%E8%BF%87%E9%A2%84%E7%BC%96%E8%AF%91%E9%98%B2%E5%BE%A1sql%E6%B3%A8%E5%85%A5/" class="article-date">
+  <time datetime="2022-04-28T12:01:12.802Z" itemprop="datePublished">2022-04-28</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">639</span>
+            <span class="post-count">663</span>
         </span>
     </span>
 
@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">2 分钟</span>
+            <span class="post-count">3 分钟</span>
         </span>
     </span>
 </div>
@@ -94,35 +94,9 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h1 id="sql注入分类"><a href="#sql注入分类" class="headerlink" title="sql注入分类"></a>sql注入分类</h1><p>&ensp;&ensp;&ensp;&ensp;以前学sql注入，sqli-lab也做完了，该回的操作都会，就是没有系统的去总结，或者说虽然有写思维导图但是没完全入脑，所以重新回来复习基础。<br>###按照注入点分类</p>
-<ul>
-<li>数字型</li>
-<li>字符型</li>
-<li>搜索型<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM users WHERE id&#x3D;$id LIMIT 0,1</span><br><span class="line">SELECT * FROM users WHERE id&#x3D;&#39;$id&#39; LIMIT 0,1</span><br><span class="line">SELECT * FROM 表名 WHERE 字段 LIKE &#39;%关键字%&#39; </span><br></pre></td></tr></table></figure>
-###按照提交的方式分类</li>
-<li>GET</li>
-<li>POST</li>
-<li>cookie注入(其实也可以算作http头部注入)</li>
-<li>http头部注入(Referer,User-Agent等等)</li>
-</ul>
-<p>###按照注入的效果分类</p>
-<ul>
-<li>基于布尔的盲注</li>
-<li>基于时间的盲注</li>
-<li>报错注入</li>
-<li>联合查询注入</li>
-<li>堆叠注入(一次性注入多条sql语句,用;做分隔)</li>
-<li>宽字节注入(GBK编码导致的两个字符组成一个中文，从而从而绕过字符转义的防御措施)</li>
-</ul>
-<p>##相关基础知识</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">MySQL一库三表</span><br><span class="line">information_schema</span><br><span class="line">    </span><br><span class="line">    schemata 存放所有创建的数据库名</span><br><span class="line">        schema_name 数据库名字段</span><br><span class="line">    </span><br><span class="line">    tables   存放所用的库名和表名</span><br><span class="line">        table_schema 数据库名字段</span><br><span class="line">        table_name 表名字段</span><br><span class="line">    </span><br><span class="line">    columns</span><br><span class="line">        table_schema </span><br><span class="line">        table_name   </span><br><span class="line">        columns_name 字段名</span><br><span class="line"></span><br><span class="line">mysql注入常用到的函数</span><br><span class="line">    load_file()</span><br><span class="line">    length()</span><br><span class="line">    substr(string,start,length)</span><br><span class="line">    mid() 同 substr()</span><br><span class="line">    concat()      </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h1 id="sqlmap-Tamper"><a href="#sqlmap-Tamper" class="headerlink" title="sqlmap Tamper"></a>sqlmap Tamper</h1><ul>
-<li><p>&ensp;&ensp;&ensp;&ensp;又重温了一下Tamper的编写。之前学习tamper编写，用的是绕过安全狗的例子。现在python学的比较好了，就去研究了自带的tamper的代码，大部分还是懂的，**kwargs和函数下嵌套函数去学习了下，感觉还是非常有收获。不过，一些正则的写法属实是看的有些迷糊，得查语法才能完全看懂。总的来说，现在别人写的Tamper看的懂了，自己也能写tamper了，re这个模块主要是我在学爬虫的时候用过，现在使用也是没有什么问题，主要就是正则表达式，其实基本的还是会的，就是有一些语法记不住。再说说我学习的方式，以前是跟着视频学，现在是看书(《web安全攻防》，挺好的一本书，实战性强)自己研究探索，对比来说，我觉得自己看书学比较适合我。</p>
-</li>
-<li><p>&ensp;&ensp;&ensp;&ensp;好了，再说一下英语四级的学习，感觉计划得调整一下，之前是有一点着急了，事情做的有效才是最关键的。以后看情况再写文章了，我感觉心态调整的差不多了。</p>
-</li>
-</ul>
+  <h2 id="原理-通过预编译，先将查询语句发送给服务器，再发送用户提交的参数信息"><a href="#原理-通过预编译，先将查询语句发送给服务器，再发送用户提交的参数信息" class="headerlink" title="原理: 通过预编译，先将查询语句发送给服务器，再发送用户提交的参数信息"></a>原理: 通过预编译，先将查询语句发送给服务器，再发送用户提交的参数信息</h2><h3 id="1-通过PDO防御的代码"><a href="#1-通过PDO防御的代码" class="headerlink" title="1.通过PDO防御的代码"></a>1.通过PDO防御的代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">&#x2F;&#x2F; set global general_log &#x3D; &#39;on&#39;  打开日志功能</span><br><span class="line">&#x2F;&#x2F; show variables like &#39;general%&#39; 查看日志是否开启，和日志保存的路径</span><br><span class="line"></span><br><span class="line">try&#123;</span><br><span class="line">    $dsn &#x3D; &#39;mysql:dbname&#x3D;security&#39;;</span><br><span class="line">    $userName &#x3D; &#39;root&#39;;</span><br><span class="line">    $passWord &#x3D; &#39;root&#39;;</span><br><span class="line">    $conn &#x3D; new PDO($dsn,$userName,$passWord);</span><br><span class="line">	</span><br><span class="line">	&#x2F;&#x2F; PDO参数</span><br><span class="line">	$conn-&gt;setAttribute(PDO::ATTR_EMULATE_PREPARES,true); &#x2F;&#x2F; 启用或禁用预处理语句的模拟，防止宽字节注入</span><br><span class="line">	$conn-&gt;setAttribute(PDO::ATTR_ERRMODE,false);         &#x2F;&#x2F; 错误报告，防止报错注入</span><br><span class="line">	&#x2F;&#x2F; $conn-&gt;setAttribute(PDO::MYSQL_ATTR_MULTI_STATEMENTS,false); &#x2F;&#x2F;多语句查询,防止堆叠查询，union查询在一定条件下可以绕过</span><br><span class="line">	</span><br><span class="line">	&#x2F;&#x2F; 设置编码</span><br><span class="line">	&#x2F;&#x2F; $conn-&gt;query(&quot;set names gbk&quot;); </span><br><span class="line">	   $conn -&gt;query(&quot;set names utf-8&quot;);</span><br><span class="line">	&#x2F;&#x2F; 测试宽字节注入，原理就是把转义的反斜杠吃掉，将想要拼接的sql语句从参数中逃逸出来。</span><br><span class="line">	&#x2F;&#x2F; mysql&gt; SELECT &#96;username&#96;,&#96;password&#96; FROM &#96;users&#96; WHERE &#96;id&#96; &#x3D; &#39;3  SAFAAND 9&#39;;</span><br><span class="line">	&#x2F;&#x2F; 实际执行效果:</span><br><span class="line">	&#x2F;&#x2F; SELECT &#96;username&#96;,&#96;password&#96; FROM &#96;users&#96; WHERE &#96;id&#96; &#x3D; &#39;3&#39;;</span><br><span class="line">	&#x2F;&#x2F; mysql在查询的时候只获取第一个字符串，如果后面的字符串之间有空格，则忽略后面的所有字符。</span><br><span class="line">	</span><br><span class="line">    &#x2F;&#x2F;创建预处理sql语句</span><br><span class="line">    $sql &#x3D; &quot;SELECT &#96;username&#96;,&#96;password&#96; FROM &#96;users&#96; WHERE &#96;id&#96; &#x3D; ? &quot;;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 执行预处理sql语句，创建一个PDOstatement</span><br><span class="line">    $pdoStmt &#x3D; $conn -&gt; prepare($sql);</span><br><span class="line">	</span><br><span class="line">	&#x2F;&#x2F; 绑定参数并执行</span><br><span class="line">	$id &#x3D; $_GET[&#39;id&#39;];</span><br><span class="line">    $pdoStmt-&gt;execute([$id]);</span><br><span class="line">	</span><br><span class="line">    while($row &#x3D; $pdoStmt-&gt;fetch(PDO::FETCH_ASSOC)) &#123;</span><br><span class="line">        echo &#39;&lt;pre&gt;&#39;;</span><br><span class="line">        print_r($row);</span><br><span class="line">		echo &quot;id &#x3D; $id&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125; catch(PDOException $e) &#123;</span><br><span class="line">    print &quot;Connect ERROR&quot;.$e-&gt;getMessage();</span><br><span class="line">    die();</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="2-通过myslqi防御"><a href="#2-通过myslqi防御" class="headerlink" title="2.通过myslqi防御"></a>2.通过myslqi防御</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">$mysqli &#x3D; new mysqli(&quot;localhost&quot;,&#39;root&#39;,&#39;root&#39;,&#39;security&#39;);</span><br><span class="line"></span><br><span class="line">if($mysqli -&gt; connect_error) </span><br><span class="line">&#123;</span><br><span class="line">    die($mysqli-&gt;connect_error);</span><br><span class="line">    exit();</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; create a predefined object and get a position</span><br><span class="line"></span><br><span class="line">$sql &#x3D; &quot;SELECT username,password FROM users WHERE id &#x3D; ?&quot;;</span><br><span class="line">$mysqli_stmt &#x3D; $mysqli-&gt;prepare($sql);</span><br><span class="line">$id &#x3D; $_GET[&#39;id&#39;];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;bind param</span><br><span class="line">&#x2F;&#x2F; stmt &#x3D;&gt; stagement</span><br><span class="line">&#x2F;&#x2F; bind_param(&quot;&lt;参数类型[i(int),s(string),d(double)]&gt;&quot;,$para0,$para1,$para2...)</span><br><span class="line">$mysqli_stmt-&gt;bind_param(&quot;i&quot;,$id);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;bind result</span><br><span class="line">$mysqli_stmt-&gt;bind_result($username,$password);</span><br><span class="line">$mysqli_stmt-&gt;execute();</span><br><span class="line"></span><br><span class="line">while($mysqli_stmt-&gt;fetch())</span><br><span class="line">&#123;</span><br><span class="line">    echo &quot;id&#x3D;$id,username&#x3D;$username,password&#x3D;$password&lt;br&gt;&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$mysqli_stmt-&gt;close();</span><br><span class="line">$mysqli-&gt;close();</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>只能说预编译的方法是防御sql注入最好的方式，但是主要还是看编写代码的人，即使用预编译也有人会写出存在sql注入的代码。</p>
  
       <!-- reward -->
       
@@ -194,7 +168,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://ggfgh.github.io/2022/04/26/%E5%AD%A6%E4%B9%A0_%E7%94%9F%E6%B4%BB%E8%AE%B0%E5%BD%95_%E5%86%8D%E6%8E%A2sql%E6%B3%A8%E5%85%A5/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://ggfgh.github.io/2022/04/28/%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%B4%BB-php%E4%B8%8B%E9%80%9A%E8%BF%87%E9%A2%84%E7%BC%96%E8%AF%91%E9%98%B2%E5%BE%A1sql%E6%B3%A8%E5%85%A5/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -205,19 +179,10 @@
    
   <nav class="article-nav">
     
-      <a href="/2022/04/28/%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%B4%BB-php%E4%B8%8B%E9%80%9A%E8%BF%87%E9%A2%84%E7%BC%96%E8%AF%91%E9%98%B2%E5%BE%A1sql%E6%B3%A8%E5%85%A5/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            学习&amp;生活_php下通过预编译防御sql注入
-          
-        </div>
-      </a>
     
-    
-      <a href="/2022/04/25/%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%B4%BB-%E5%86%8D%E6%8E%A2poc%E7%9A%84%E7%BC%96%E5%86%99/" class="article-nav-link">
+      <a href="/2022/04/26/%E5%AD%A6%E4%B9%A0_%E7%94%9F%E6%B4%BB%E8%AE%B0%E5%BD%95_%E5%86%8D%E6%8E%A2sql%E6%B3%A8%E5%85%A5/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">学习&amp;生活_再探poc的编写</div>
+        <div class="article-nav-title">学习_生活记录_再探sql注入_sqlmap使用 &amp; tamper编写</div>
       </a>
     
   </nav>
