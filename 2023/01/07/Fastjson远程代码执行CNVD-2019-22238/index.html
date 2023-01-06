@@ -97,7 +97,7 @@
   <h3 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h3><p>以前都没怎么写技术有关的文章，可能是觉得自己写的会不好，误导别人。现在，自认为有点实力了，就写些漏洞复现的文章压压筋，另外一个原因就是，在复现找文章总是会出现各种问题，所以，我觉得还是自己写文章，做记录，这样以后又遇到类似的问题就可以看自己写的文章解决了。</p>
 <h3 id="0x01-漏洞简述"><a href="#0x01-漏洞简述" class="headerlink" title="0x01 漏洞简述"></a>0x01 漏洞简述</h3><p> Fastjson 是一个 Java 库,可以将 Java 对象转换为 JSON 格式,当然它也可以将 JSON 字符串转换为 Java 对象 Fastjson提供了autotype功能，允许用户在反序列化数据中通过“@type”指定反序列化的类型，其次，Fastjson自定义的反序列化机制时会调用指定类中的setter方法及部分getter方法，那么当组件开启了autotype功能并且反序列化不可信数据时，攻击者可以构造数据，使目标应用的代码执行流程进入特定类的特定setter或者getter方法中，若指定类的指定方法中有可被恶意利用的逻辑（也就是通常所指的“Gadget”），则会造成一些严重的安全问题。 </p>
 <h3 id="0x02-漏洞复现"><a href="#0x02-漏洞复现" class="headerlink" title="0x02 漏洞复现"></a>0x02 漏洞复现</h3><p>用的是vulfoucs靶场复现的，fastjson&lt;=1.2.24，由于fastjson版本不同payload也会有所不同，所以这里提前声明一下。</p>
-<p><img src="/image-20230106232719456.png" alt="image-20230106232719456"></p>
+<p><img src="/image-20230106232719456.png"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">主要步骤 </span><br><span class="line">1.通过dnslog检测漏洞是否存在</span><br><span class="line">2.在公网vps上通过JNDI-Injection-Exploit工具搭建ladp和rmi服务</span><br><span class="line">3.反弹shell</span><br></pre></td></tr></table></figure>
 <p>工具下载</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;welk1n&#x2F;JNDI-Injection-Exploit.git</span><br></pre></td></tr></table></figure>
