@@ -97,16 +97,16 @@
   <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>这篇文章主要记录我参加长亭科技举办的realworldctf比赛的经历。由于是第一次参加ctf比赛，没什么经验，所以只做出来了一道送分的签到题，但是还是有很多收获的。</p>
 <p>总的来说，相比于实战渗透，ctf比赛更加着眼于对漏洞的理解程度（尤其是对代码层面的理解，各种过滤防护的新技术）；而实战渗透主要就是要熟悉已知的漏洞利用手法，以及各种变异的payload对防护软件进行绕过；当然因为有很多现成的工具可以利用漏洞，但是本质上来说发现web安全问题就是通过构造http数据包，发包，根据回显结果检测是否存在漏洞这几个步骤，工具只是自动化了这个过程而已，遇到复杂情况还是要对漏洞形成的原理有深入的理解才能利用成功，所以说打ctf比赛是加深对漏洞理解的好机会，同时，我对参加ctf比赛也是期待已久，这次总算是有机会参加了。</p>
 <h3 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h3><h4 id="第一题"><a href="#第一题" class="headerlink" title="第一题"></a>第一题</h4><p>第一题叫做chat-in，这道题其实就是根据给出的一段哈希值去计算一个值，就和比特币挖矿类似，算是一个pow证明。</p>
-<p><img src="/capture_20230107160113596.bmp" alt="capture_20230107160113596"></p>
+<p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/capture_20230107160113596.bmp" alt="capture_20230107160113596"></p>
 <p>这里出题方温馨的给出了一个github脚本链接，这个脚本就是用来计算答案的。不过比较坑的地方是，如果你像我一样用的是<code>python 3.7.9</code>,那么恭喜你运行脚本之后就会报错，原因是没有加上<code>if __name__ ==&quot;__main__&quot;</code>，加上之后就可以正常运行脚本了，最后将计算出来的值填入就可以进入目标主机拿到flag了。</p>
-<p><img src="/capture_20230107160246982.bmp" alt="capture_20230107160246982"></p>
-<p><img src="/capture_20230107160253993.bmp" alt="capture_20230107160253993"></p>
-<p><img src="/capture_20230107160236881.bmp" alt="capture_20230107160236881"></p>
-<p><img src="/capture_20230107160017956.bmp" alt="capture_20230107160017956"></p>
-<p><img src="/image-20230108162012048.png" alt="image-20230108162012048"></p>
+<p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/capture_20230107160246982.bmp" alt="capture_20230107160246982"></p>
+<p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/capture_20230107160253993.bmp" alt="capture_20230107160253993"></p>
+<p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/capture_20230107160236881.bmp" alt="capture_20230107160236881"></p>
+<p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/capture_20230107160017956.bmp" alt="capture_20230107160017956"></p>
+<p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/image-20230108162012048.png" alt="image-20230108162012048"></p>
 <p>我顺利拿到送分题的35积分，也是没想到，拿下送分题其实就已经超越很多人了。之后我还看了一下排行榜，一眼看上了以个叫<code>bule water</code>的大神（排名第一当时）也是一个人在战斗，看了一下他的解题记录，我觉得有一天我也可以变得像他一样那么的强（手动狗头），我不是在开玩笑，哈哈哈哈！</p>
-<p><img src="/image-20230108162209745.png" alt="image-20230108162209745"></p>
-<p><img src="/image-20230108162714403.png" alt="image-20230108162714403"></p>
+<p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/image-20230108162209745.png" alt="image-20230108162209745"></p>
+<p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/image-20230108162714403.png" alt="image-20230108162714403"></p>
 <h3 id="第二题"><a href="#第二题" class="headerlink" title="第二题"></a>第二题</h3><p>接下来就是痛苦之旅了，第二道web题考的是xss，一开始没什么思路，后面在看js代码的过程中有了大体的思路</p>
  
       <!-- reward -->
