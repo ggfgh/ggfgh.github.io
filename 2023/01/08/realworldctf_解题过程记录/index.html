@@ -124,7 +124,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">可以插入图片</span><br><span class="line">&lt;img src&#x3D;&#39;&#39;&gt;</span><br><span class="line">通过css插入外部资源</span><br><span class="line">&lt;form&gt;&lt;math&gt;&lt;&#x2F;math&gt;&lt;style&gt;li&#123;background-image: url(&#39;http:&#x2F;&#x2F;123.249.90.73:8000&#x2F;1.html&#39;);&lt;&#x2F;style&gt;&lt;&#x2F;form&gt;</span><br></pre></td></tr></table></figure>
 <p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/capture_20230108173832959.bmp" alt="capture_20230108173832959"></p>
 <p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/image-20230108174200890.png" alt="image-20230108174200890"></p>
-<p>这张图片是从一个xss平台上拿的payload，之后可以再xss平台上看到所有人的信息，但是插入图片的方式不支持获取cookie，当时还以为这道题已经被我拿下了呢，白高兴一场，后面才发现要走的路还长。</p>
+<p>这张图片是从一个xss平台上拿的payload，之后可以再xss平台上看到所有人的信息，但是插入图片的方式不支持获取cookie，当时还以为这道题已经被拿下了呢，白高兴一场，后面才发现要走的路还长。</p>
 <p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/image-20230108175243652.png" alt="image-20230108175243652"></p>
 <p>到这里思路断了，笔者继续审计js代码，发现网页是通过一个叫<code>DOMPurify.sanitize</code>的方法去进行过滤的。</p>
 <p>于是，笔者通过查找相关的资料，尝试了一些网上的绕过方式，这里给出一些payload。</p>
