@@ -114,12 +114,12 @@
 <p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/image-20230108171543914.png" alt="image-20230108171543914"></p>
 <p>Challenge的链接进入是一个聊天的页面，你可以发送一些信息</p>
 <p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/image-20230108171753682.png" alt="image-20230108171753682"></p>
-<p>xss bot进入是一个这样子的页面，到了这里，我觉出题人的意思是让你构造出一个能够绕过的xss payload ，然后xss bot会模拟admin去访问你的URL，再结合题目的说明，我们要做的是从admin的cookie中去获取flag。</p>
+<p>xss bot进入是一个这样子的页面，到了这里，笔者觉出题人的意思是让你构造出一个能够绕过的xss payload ，然后xss bot会模拟admin去访问你的URL，再结合题目的说明，笔者们要做的是从admin的cookie中去获取flag。</p>
 <p>现在，思路就变得清晰了起来。后续，笔者通过测试，这里输入的url只能是同源的，在一开始进入的聊天页面也是无法插入任何的html代码的。</p>
 <p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/image-20230108171616114.png" alt="image-20230108171616114"></p>
 <p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/image-20230108172020049.png" alt="image-20230108172020049"></p>
 <p>后续通过获取附件，审计源码得知可以通过改变room参数为<code>DOMPurify</code>进入到另一个聊天页面。</p>
-<p>我通过测试，发现再这个页面中可以插入图片，或者通过html带入一些css改变页面的背景图片引入一些外部资源。不过还是没有办法引入要执行js代码，像一些危险的属性和标签都会被过滤掉。</p>
+<p>笔者通过测试，发现再这个页面中可以插入图片，或者通过html带入一些css改变页面的背景图片引入一些外部资源。不过还是没有办法引入要执行js代码，像一些危险的属性和标签都会被过滤掉。</p>
 <p>这里笔者还发现，这个聊天页面的显示的内容是通过js动态生成的，也就是说在生成html的过程中会对用户的输入进行一些安全过滤。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">可以插入图片</span><br><span class="line">&lt;img src&#x3D;&#39;&#39;&gt;</span><br><span class="line">通过css插入外部资源</span><br><span class="line">&lt;form&gt;&lt;math&gt;&lt;&#x2F;math&gt;&lt;style&gt;li&#123;background-image: url(&#39;http:&#x2F;&#x2F;123.249.90.73:8000&#x2F;1.html&#39;);&lt;&#x2F;style&gt;&lt;&#x2F;form&gt;</span><br></pre></td></tr></table></figure>
 <p><img src="/2023/01/08/realworldctf_%E8%A7%A3%E9%A2%98%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/capture_20230108173832959.bmp" alt="capture_20230108173832959"></p>
