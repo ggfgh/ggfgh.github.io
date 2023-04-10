@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    php代码审计_mvc框架审计_文件上传笔记 |  K0uSAOF
+    Tag: udf |  K0uSAOF
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -43,237 +43,56 @@
       
     <main class="content on">
       <section class="outer">
-  <article
-  id="post-代码审计_php_mvc框架_文件上传"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
+  
+  
+  <article class="articles">
     
-    <header class="article-header">
+    
+    <h1 class="page-type-title">#&nbspudf</h1>
+    
+    
+  
+  
+  
+  
+  
+  
+  <div class="archives-wrap">
+    <div class="archive-year-wrap">
+      <a href="/archives/2023" class="archive-year">2023</a>
+    </div>
+    <div class="archives">
+      
+      <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/2023/04/10/%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87%E2%80%94%E2%80%94mysql%E6%8F%90%E6%9D%83/" class="archive-article-date">
+  <time datetime="2023-04-09T16:00:00.000Z" itemprop="datePublished">04/10</time>
+</a>
        
-<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  php代码审计_mvc框架审计_文件上传笔记
-</h1>
+<h2 itemprop="name">
+  <a class="archive-article-title" href="/2023/04/10/%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87%E2%80%94%E2%80%94mysql%E6%8F%90%E6%9D%83/"
+    >权限提升——mysql提权</a> 
+</h2>
  
 
     </header>
-     
-    <div class="article-meta">
-      <a href="/2023/01/05/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1_php_mvc%E6%A1%86%E6%9E%B6_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" class="article-date">
-  <time datetime="2023-01-04T18:43:32.868Z" itemprop="datePublished">2023-01-05</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+    
+    
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/udf/" rel="tag">udf</a></li></ul>
+
+    
   </div>
-  
-<div class="word_count">
-    <span class="post-time">
-        <span class="post-meta-item-icon">
-            <i class="ri-quill-pen-line"></i>
-            <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">734</span>
-        </span>
-    </span>
-
-    <span class="post-time">
-        &nbsp; | &nbsp;
-        <span class="post-meta-item-icon">
-            <i class="ri-book-open-line"></i>
-            <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">2 分钟</span>
-        </span>
-    </span>
-</div>
- 
-    </div>
-      
-    <div class="tocbot"></div>
-
-
-
-
-  
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>2023年啦！最近在学代码审计。如果按照搭建博客的2021年1月算，我已经学了2年的网安啦！但是，我现在才感觉真正入门，如今的我，poc&amp;exp也会写了（能自己独立写，也能写到pocsuite3框架里面去），开始有分析漏洞的能力了（以前只会利用漏洞，不懂为什么payload要那样去打），现在能从代码层面一步一步追踪分析漏洞的成因，我有种打开新世界大门的感觉，我更加有信心了。虽然还有好多收获想说，但是又欲言又止，总之，还有很多东西等着我去探索学习。</p>
-<p>最近这几天写的一些poc列举</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">20230104_7_thinkphp_lang_rce.py thinkphp lang远程命令执行</span><br><span class="line">20230103_6_sendproduct100_sqli.py 发货100 M_id SQL注入CNVD-2021-30193</span><br><span class="line">f5_big-ip_rce_cve-2021-22986.py BIG-IP远程代码执行漏洞(CVE-2021-22986)</span><br></pre></td></tr></table></figure>
-<h4 id="一些计划"><a href="#一些计划" class="headerlink" title="一些计划"></a>一些计划</h4><p>1月7日打算参加长亭科技举办的real world CTF体验赛，由于以前没有经验，所以我打算step by step，当作一次不错的学习机会来对待这个比赛。</p>
-<p>新的一年，我打算把php&amp;java代码审计(漏洞分析能力 漏洞挖掘能力)和内网渗透(复杂网络下的横向渗透能力)学好，有机会还可以学习一下云服务器下的渗透思路（assesskey泄露，CF框架的使用），至少达到中级红队的要求，准备23年6-7月份的护网以及秋招。</p>
-<p>其实除了传统的web安全，我对近源渗透（badUSB，wifi，门禁卡ID&amp;IC卡）以及apt攻击中常用的水坑攻击和鱼叉攻击都非常感兴趣，也都有所了解。</p>
-<h3 id="文件上传审计关键点"><a href="#文件上传审计关键点" class="headerlink" title="文件上传审计关键点"></a>文件上传审计关键点</h3><ul>
-<li>全局寻找关键字 $FILES 以及可能出现在代码中的文字(如，’文件上传成功’)，定位上传功能的代码段</li>
-<li>功能点抓包,再根据参数或路由信息找到对应源代码</li>
-<li>理清上传的判断逻辑（黑名单，白名单，前端js，MIME类型）</li>
-</ul>
-<h3 id="thinkphp框架下审计的关键点"><a href="#thinkphp框架下审计的关键点" class="headerlink" title="thinkphp框架下审计的关键点"></a>thinkphp框架下审计的关键点</h3><ul>
-<li><p>找到入口文件，思考网站的路由信息是如何生成的，网站目录结构</p>
-</li>
-<li><p>找到控制器文件，一般在application目录下，再结合一些功能点抓包得到的参数，理清代码结构逻辑，如在发送的poc中哪个参数对应类，哪个参数对应方法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find .&#x2F; -name &quot;*.php&quot;|xargs grep &quot;你要搜索的文件中的文本内容&quot; 一条有用查找文件内容的命令</span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ul>
-<ul>
-<li>看使用框架的代码是否规范，是否正确的使用了框架的一些安全检查方法，而不是使用自己写方法。</li>
-</ul>
-<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>理不清楚执行过程，可以通过phpstorm+xdebug设置断点一步一步看执行的情况。</p>
- 
-      <!-- reward -->
-      
-            
-      <div id="reword-out">
-        <div id="reward-btn">
-          打赏
-        </div>
-      </div>
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <div class="declare">
-      <ul class="post-copyright">
-        <li>
-          <i class="ri-copyright-line"></i>
-          <strong>版权声明： </strong>
-          
-          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
-          
-        </li>
-      </ul>
-    </div>
-    
-    <footer class="article-footer">
-       
-<div class="share-btn">
-      <span class="share-sns share-outer">
-        <i class="ri-share-forward-line"></i>
-        分享
-      </span>
-      <div class="share-wrap">
-        <i class="arrow"></i>
-        <div class="share-icons">
-          
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="ri-weibo-fill"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="ri-wechat-fill"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="ri-qq-fill"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="ri-douban-line"></i>
-          </a>
-          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a> -->
-          
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="ri-facebook-circle-fill"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="ri-twitter-fill"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="ri-google-fill"></i>
-          </a>
-        </div>
-      </div>
-</div>
-
-<div class="wx-share-modal">
-    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://ggfgh.github.io/2023/01/05/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1_php_mvc%E6%A1%86%E6%9E%B6_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div id="share-mask"></div>  
-    </footer>
-  </div>
-
-   
-  <nav class="article-nav">
-    
-      <a href="/2023/01/07/Fastjson%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8CCNVD-2019-22238/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            Fastjson远程代码执行CNVD-2019-22238
-          
-        </div>
-      </a>
-    
-    
-      <a href="/2022/04/28/%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%B4%BB-php%E4%B8%8B%E9%80%9A%E8%BF%87%E9%A2%84%E7%BC%96%E8%AF%91%E9%98%B2%E5%BE%A1sql%E6%B3%A8%E5%85%A5/" class="article-nav-link">
-        <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">学习&amp;生活_php下通过预编译防御sql注入</div>
-      </a>
-    
-  </nav>
-
-   
-<!-- valine评论 -->
-<div id="vcomments-box">
-  <div id="vcomments"></div>
-</div>
-<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
-<script>
-  new Valine({
-    el: "#vcomments",
-    app_id: "VwUY4LFvDM8wmTg5JxV9H9d1-MdYXbMMI",
-    app_key: "ilcpQRFh8sOHTX2RdzjOaWOw",
-    path: window.location.pathname,
-    avatar: "wavatar",
-    placeholder: "给我的文章加点评论吧~",
-    recordIP: true,
-  });
-  const infoEle = document.querySelector("#vcomments .info");
-  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
-    infoEle.childNodes.forEach(function (item) {
-      item.parentNode.removeChild(item);
-    });
-  }
-</script>
-<style>
-  #vcomments-box {
-    padding: 5px 30px;
-  }
-
-  @media screen and (max-width: 800px) {
-    #vcomments-box {
-      padding: 5px 0px;
-    }
-  }
-
-  #vcomments-box #vcomments {
-    background-color: #fff;
-  }
-
-  .v .vlist .vcard .vh {
-    padding-right: 20px;
-  }
-
-  .v .vlist .vcard {
-    padding-left: 10px;
-  }
-</style>
-
- 
-   
-     
 </article>
+      
+      
+    </div>
+  </div>
+  
+  
 
+  
 </section>
       <footer class="footer">
   <div class="outer">
@@ -435,23 +254,6 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
-
-
-<script src="/js/tocbot.min.js"></script>
-
-<script>
-  tocbot.init({
-    tocSelector: '.tocbot',
-    contentSelector: '.article-entry',
-    headingSelector: 'h1, h2, h3, h4, h5, h6',
-    hasInnerContainers: true,
-    scrollSmooth: true,
-    scrollContainer: 'main',
-    positionFixedSelector: '.tocbot',
-    positionFixedClass: 'is-position-fixed',
-    fixedSidebarOffset: 'auto'
-  });
-</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
